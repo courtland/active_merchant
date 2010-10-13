@@ -3,6 +3,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
+$: << '.' if RUBY_VERSION >= '1.9.2'
 require 'lib/support/gateway_support'
 require 'lib/support/outbound_hosts'
 
