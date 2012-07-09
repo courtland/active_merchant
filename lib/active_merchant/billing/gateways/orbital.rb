@@ -77,6 +77,8 @@ module ActiveMerchant #:nodoc:
         "EUR" => '978'
       }
 
+      AVS_SUPPORTED_COUNTRIES = ['US', 'CA', 'UK', 'GB']
+
       def initialize(options = {})
         requires!(options, :merchant_id)
         requires!(options, :login, :password) unless options[:ip_authentication]
@@ -146,16 +148,20 @@ module ActiveMerchant #:nodoc:
         xml.tag! :SDMerchantEmail, soft_desc.merchant_email
       end
 
-      def add_address(xml, creditcard, options)      
+      def add_address(xml, creditcard, options)
         if address = options[:billing_address] || options[:address]
-          xml.tag! :AVSzip, address[:zip]
-          xml.tag! :AVSaddress1, address[:address1]
-          xml.tag! :AVSaddress2, address[:address2]
-          xml.tag! :AVScity, address[:city]
-          xml.tag! :AVSstate, address[:state]
-          xml.tag! :AVSphoneNum, address[:phone] ? address[:phone].scan(/\d/).join.to_s : nil
+          avs_supported = AVS_SUPPORTED_COUNTRIES.include?(address[:country].to_s)
+
+          if avs_supported
+            xml.tag! :AVSzip, address[:zip]
+            xml.tag! :AVSaddress1, address[:address1]
+            xml.tag! :AVSaddress2, address[:address2]
+            xml.tag! :AVScity, address[:city]
+            xml.tag! :AVSstate, address[:state]
+            xml.tag! :AVSphoneNum, address[:phone] ? address[:phone].scan(/\d/).join.to_s : nil
+          end
           xml.tag! :AVSname, creditcard.name
-          xml.tag! :AVScountryCode, address[:country]
+          xml.tag! :AVScountryCode, avs_supported ? address[:country] : ''
         end
       end
 
@@ -177,6 +183,7 @@ module ActiveMerchant #:nodoc:
         xml.tag! :CurrencyExponent, '2' # Will need updating to support currencies such as the Yen.
       end
       
+
       def parse(body)
         response = {}
         xml = REXML::Document.new(body)
