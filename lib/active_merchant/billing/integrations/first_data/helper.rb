@@ -10,11 +10,11 @@ module ActiveMerchant #:nodoc:
         #
         # An example. Note the username as a parameter and transaction key you
         # will want to use later.
-        # 
+        #
         #  payment_service_for('order_id', 'first_data_payment_page_id', :service => :first_data,  :amount => 157.0) do |service|
-        # 
+        #
         #    # You must call setup_hash and invoice
-        #    
+        #
         #    service.setup_hash :transaction_key => '8CP6zJ7uD875J6tY',
         #        :order_timestamp => 1206836763
         #    service.customer_id 8
@@ -25,7 +25,7 @@ module ActiveMerchant #:nodoc:
         #   service.billing_address :zip => 'g',
         #                   :country => 'United States of America',
         #                   :address => 'g'
-        # 
+        #
         #   service.ship_to_address :first_name => 'g',
         #                            :last_name => 'g',
         #                            :city => '',
@@ -34,7 +34,7 @@ module ActiveMerchant #:nodoc:
         #                            :state => address.state,
         #                            :country => 'United States of America',
         #                            :zip => 'g'
-        # 
+        #
         #   service.invoice "516428355" # your invoice number
         #   # The end-user is presented with the HTML produced by the notify_url
         #   # (using the First Data Receipt Link feature).
@@ -50,17 +50,13 @@ module ActiveMerchant #:nodoc:
         #   server.add_tax_as_line_item # same with tax
         #   # See the helper.rb file for various custom fields
         # end
-        
         class Helper < ActiveMerchant::Billing::Integrations::AuthorizeNetSim::Helper
-          
           # Configure notify_url to use the "Relay Response" feature
           mapping :notify_url, 'x_relay_url'
 
           # Configure return_url to use the "Receipt Link" feature
           mapping :return_url, 'x_receipt_link_url'
-          
         end
-
       end
     end
   end
